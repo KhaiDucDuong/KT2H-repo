@@ -116,6 +116,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         messages.nullDestMatcher().authenticated();
         messages.simpSubscribeDestMatchers("/user/**").hasAuthority("USER");
         messages.simpMessageDestMatchers("/app/private-message").hasAuthority("USER");
+        messages.simpMessageDestMatchers("/app/react-message").hasAuthority("USER");
         messages.simpMessageDestMatchers("/app/group-chat").hasAuthority("USER");
         messages.simpSubscribeDestMatchers("/user/admin/**").hasAuthority("ADMIN");
         messages.simpDestMatchers("app/admin/**").hasAuthority("ADMIN");

@@ -3,6 +3,7 @@ package hcmute.hhkt.messengerapp.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,5 +35,8 @@ public class Groupchat extends AbstractDateAuditingEntity{
 
     @ManyToMany(mappedBy = "groups")
     private Set<User> users;
+
+    @OneToMany(mappedBy = "groupchat", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Channel> channels;
 
 }

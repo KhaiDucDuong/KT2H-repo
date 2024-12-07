@@ -84,6 +84,9 @@ public class User extends AbstractAuditingEntity {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReactEmoji> reactEmoji;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "receiver", orphanRemoval = true)
     private List<InvitationNotification> invitationNotifications;
 
@@ -94,4 +97,7 @@ public class User extends AbstractAuditingEntity {
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     private Set<Groupchat> groups;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private PrivacySetting privacySetting;
 }

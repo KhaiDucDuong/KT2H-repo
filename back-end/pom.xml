@@ -138,6 +138,21 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
+
+		<!--For working with Gemini-->
+		<dependency>
+			<artifactId>libraries-bom</artifactId>
+			<groupId>com.google.cloud</groupId>
+			<scope>import</scope>
+			<type>pom</type>
+			<version>26.51.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-vertexai</artifactId>
+			<version>1.14.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -33,9 +33,15 @@ public class Message extends AbstractDateAuditingEntity{
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private User sender;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReactEmoji> reactEmojis;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type", length = 20, nullable = false)
     private MessageType messageType;
+
+    @Column(name = "has_bad_words")
+    private boolean hasBadWords;
 
     @Column(name = "message", unique = false, columnDefinition = "TEXT")
     private String message;

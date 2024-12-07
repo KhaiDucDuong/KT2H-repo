@@ -3,6 +3,7 @@ package hcmute.hhkt.messengerapp.service.GroupchatService;
 import hcmute.hhkt.messengerapp.domain.Groupchat;
 import hcmute.hhkt.messengerapp.domain.User;
 import hcmute.hhkt.messengerapp.repository.GroupchatRepository;
+import hcmute.hhkt.messengerapp.service.ChannelService.IChannelService;
 import hcmute.hhkt.messengerapp.service.UserService.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class GroupchatServiceImpl implements  IGroupchatService{
     private final GroupchatRepository groupchatRepository;
     private final IUserService userService;
+    private  final IChannelService channelService;
 
 
     @Override
@@ -38,6 +40,7 @@ public class GroupchatServiceImpl implements  IGroupchatService{
     public boolean delGroupchat (String groupID)
     {
         try {
+            channelService.DeleteChannelByGroupID(groupID);
             groupchatRepository.deleteById(UUID.fromString(groupID));
             return true;
         }

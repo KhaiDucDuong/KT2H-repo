@@ -3,7 +3,6 @@ package hcmute.hhkt.messengerapp.service.UserService;
 import hcmute.hhkt.messengerapp.constant.ExceptionMessage;
 import hcmute.hhkt.messengerapp.domain.Account;
 import hcmute.hhkt.messengerapp.domain.User;
-import hcmute.hhkt.messengerapp.domain.enums.AccountStatus;
 import hcmute.hhkt.messengerapp.domain.enums.UserCreationType;
 import hcmute.hhkt.messengerapp.domain.enums.UserDefaultStatus;
 import hcmute.hhkt.messengerapp.domain.enums.UserStatus;
@@ -11,7 +10,6 @@ import hcmute.hhkt.messengerapp.dto.RegisterUserDTO;
 import hcmute.hhkt.messengerapp.dto.SearchUserDTO;
 import hcmute.hhkt.messengerapp.dto.UserProfileDTO;
 import hcmute.hhkt.messengerapp.repository.UserRepository;
-import hcmute.hhkt.messengerapp.service.AccountService.AccountServiceImpl;
 import hcmute.hhkt.messengerapp.service.AccountService.IAccountService;
 import hcmute.hhkt.messengerapp.service.MailService.MailService;
 import lombok.RequiredArgsConstructor;
@@ -117,6 +115,7 @@ public class UserServiceImpl implements IUserService {
     public User findById(UUID id) {
         return userRepository.findById(id).orElse(null);
     }
+
 
     @Override
     public void resendActivationEmail(User user) {

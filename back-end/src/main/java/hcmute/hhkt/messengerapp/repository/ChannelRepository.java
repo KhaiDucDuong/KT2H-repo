@@ -16,4 +16,5 @@ public interface ChannelRepository extends JpaRepository<Channel, UUID>{
 
     List<Channel> getChannelByGroupchat_Groupid(UUID uuid);
 
+    void deleteChannelByGroupchat_Groupid(UUID uuid);
 }

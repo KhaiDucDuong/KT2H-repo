@@ -10,4 +10,5 @@ import java.util.UUID;
 
 public interface MessageRepository extends JpaRepository<Message, UUID> {
     Page<Message> findMessagesByConversationAndIsDeletedIsFalse(Conversation conversation, Pageable pageable);
+
 }

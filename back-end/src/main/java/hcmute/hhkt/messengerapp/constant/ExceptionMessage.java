@@ -37,4 +37,7 @@ public class ExceptionMessage {
     public static final String FILE_NAME_BLANK = "File name is blank";
     public static final String IMAGE_INVALID = "Error processing image file";
     public static final String RESIZE_IMAGE_ERROR = "Error trying to resize image file";
+
+    public static final String INVALID_USER = "User does not exist";
+    public static final String PRIVACY_SETTING_DOES_NOT_EXIST = "Privacy setting does not exist";
 }

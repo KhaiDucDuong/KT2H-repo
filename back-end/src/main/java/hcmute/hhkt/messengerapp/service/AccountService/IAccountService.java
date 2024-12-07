@@ -5,6 +5,7 @@ import hcmute.hhkt.messengerapp.dto.RegisterAccountDTO;
 import hcmute.hhkt.messengerapp.dto.RegisterUserDTO;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface IAccountService {
     Account findAccountByUserName(String username);
@@ -13,4 +14,6 @@ public interface IAccountService {
     Optional<Account> activateRegistration(String key);
     boolean removeUnactivatedAccount(Account account);
     String renewActivationCode(Account account);
+
+    Account findAccountByID(UUID id);
 }

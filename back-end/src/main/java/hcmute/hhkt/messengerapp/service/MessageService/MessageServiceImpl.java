@@ -15,7 +15,9 @@ import hcmute.hhkt.messengerapp.domain.enums.MessageType;
 import hcmute.hhkt.messengerapp.dto.MessageDTO;
 import hcmute.hhkt.messengerapp.repository.MessageRepository;
 import hcmute.hhkt.messengerapp.service.ConversationService.IConversationService;
+import hcmute.hhkt.messengerapp.service.GoogleGeminiService.IGoogleGeminiService;
 import hcmute.hhkt.messengerapp.service.UserService.IUserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +46,7 @@ public class MessageServiceImpl implements IMessageService{
     private final MessageRepository messageRepository;
     private final IConversationService conversationService;
     private final IUserService userService;
+    private final IGoogleGeminiService googleGeminiService;
     @Override
     public Message createMessage(MessageDTO messageDTO) {
         MessageType messageType = MessageType.valueOf(messageDTO.getMessageType());
@@ -83,10 +86,13 @@ public class MessageServiceImpl implements IMessageService{
             message.setConversation(conversationService.findById(UUID.fromString(messageDTO.getConversationId())));
         }
 
+        //call gemini to check for bad words
+        boolean hasBadWords = googleGeminiService.checkContainBadWordFilter(message.getMessage());
+        message.setHasBadWords(hasBadWords);
+
         // Lưu tin nhắn vào cơ sở dữ liệu
         return messageRepository.save(message);
     }
-
 
     @Override
     public ResultPaginationResponse getConversationMessages(Conversation conversation, Pageable pageable) {
@@ -111,7 +117,8 @@ public class MessageServiceImpl implements IMessageService{
 
     @Override
     public Message findMessageById(UUID messageId) {
-        return null;
+        return messageRepository.findById(messageId)
+                .orElseThrow(() -> new EntityNotFoundException("Message not found with ID: " + messageId));
     }
 
     @Override

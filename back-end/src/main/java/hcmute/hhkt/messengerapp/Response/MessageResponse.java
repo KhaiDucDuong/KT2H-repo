@@ -2,6 +2,7 @@ package hcmute.hhkt.messengerapp.Response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import hcmute.hhkt.messengerapp.domain.Message;
+import hcmute.hhkt.messengerapp.dto.ReactEmojiDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Getter
@@ -29,6 +31,10 @@ public class MessageResponse {
     private Instant sentAt;
     @JsonProperty("image_urls")
     private List<String> imageUrls;
+    @JsonProperty("react_emojis")
+    private List<ReactResponse> reactEmojis;
+    @JsonProperty("has_bad_words")
+    private boolean hasBadWords;
 
     public static MessageResponse fromMessage(Message message){
         return MessageResponse.builder()
@@ -39,6 +45,12 @@ public class MessageResponse {
                 .isReacted(message.getIsReacted())
                 .sentAt(message.getCreatedDate())
                 .imageUrls(message.getImageUrls())
+                .hasBadWords(message.isHasBadWords())
+                .reactEmojis(Optional.ofNullable(message.getReactEmojis())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .map(ReactResponse::fromReactEmoji)
+                        .toList())
                 .build();
     }
 

@@ -2,12 +2,14 @@ package hcmute.hhkt.messengerapp.service.AccountService;
 
 import hcmute.hhkt.messengerapp.constant.ExceptionMessage;
 import hcmute.hhkt.messengerapp.domain.Account;
+import hcmute.hhkt.messengerapp.domain.Conversation;
 import hcmute.hhkt.messengerapp.domain.enums.AccountStatus;
 import hcmute.hhkt.messengerapp.dto.RegisterAccountDTO;
 import hcmute.hhkt.messengerapp.dto.RegisterUserDTO;
 import hcmute.hhkt.messengerapp.repository.AccountRepository;
 import hcmute.hhkt.messengerapp.util.RandomUtil;
 import hcmute.hhkt.messengerapp.util.RegrexUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +95,14 @@ public class AccountServiceImpl implements IAccountService{
         account.setActivationKey(RandomUtil.generateActivationKey());
         return accountRepository.save(account).getActivationKey();
     }
+
+    @Override
+    public Account findAccountByID(UUID id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found with ID: " + id));
+    }
+
+
 
     /**
      * Not activated users should be automatically deleted after 3 days.

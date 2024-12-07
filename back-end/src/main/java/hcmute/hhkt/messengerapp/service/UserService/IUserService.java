@@ -21,6 +21,7 @@ public interface IUserService {
     User findUserByOAuth2User(OAuth2User oAuth2User);
     List<User> getAllUsers();
     User findById(UUID id);
+
     void resendActivationEmail(User user);
     User setUserAccount(User user, Account account);
     void updateUserStatus(User user, UserStatus status);

@@ -70,4 +70,14 @@ public class ChannelServiceImpl implements  IChannelService{
             return false;
         }
     }
+    @Override
+    public boolean DeleteChannelByGroupID(String groupID){
+        try{
+            channelRepository.deleteChannelByGroupchat_Groupid(UUID.fromString(groupID));
+            return true;
+        }
+        catch(Exception e){
+            return  false;
+        }
+    }
 }

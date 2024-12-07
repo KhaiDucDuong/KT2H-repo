@@ -15,6 +15,7 @@ public interface IMessageService {
 
     String uploadImage(MultipartFile file) throws IOException;
     ResultPaginationResponse getConversationMessages(Conversation conversation, Pageable pageable);
+
     Message updateMessage(MessageDTO messageDTO);
     Message findMessageById(UUID messageId);
     void deleteMessage(Message message);
