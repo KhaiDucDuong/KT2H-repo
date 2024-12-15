@@ -28,10 +28,10 @@ import {
   FILE_SIZE_TOO_LARGE_5MB,
   INVALID_IMG_FILE_TYPE,
 } from "@/types/const/ErrorMessage";
-import { ShowMyAccountModalType } from "../SideNavbar/MyAccountModal";
 import { UserDataOnlyResponse } from "@/types/response";
 import { setUserSessionCookie } from "@/services/AuthService";
 import MyProfileEditModal from "./MyProfileEditModal";
+import { ShowNavbarModalType } from "../SideNavbar/SideNavbar";
 
 const ACCEPTED_FILE_TYPE = [
   "image/jpeg",
@@ -42,7 +42,7 @@ const ACCEPTED_FILE_TYPE = [
 
 interface MyProfileModalProps {
   show: boolean;
-  setShow: Dispatch<SetStateAction<ShowMyAccountModalType>>;
+  setShow: Dispatch<SetStateAction<ShowNavbarModalType>>;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; //5mbs
@@ -65,7 +65,7 @@ const MyProfileModal = (props: MyProfileModalProps) => {
   function onModalClose(open: boolean) {
     if (open) return;
     resetStates();
-    setShow(ShowMyAccountModalType.NONE);
+    setShow(ShowNavbarModalType.NONE);
   }
 
   function resetStates() {

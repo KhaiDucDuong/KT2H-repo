@@ -56,7 +56,12 @@ const FriendListDisplay = () => {
   }, []);
 
   if (isLoading) {
-    return <FriendListDisplayLoading />;
+    return       <section className="size-full flex flex-col">
+    <div className="mb-[10px] w-[96%] h-[40px] pl-[14px] text-gray-2 self-center flex flex-col justify-end">
+      Total friends: 0
+    </div>
+    <FriendListDisplayLoading /> 
+    </section>;
   }
 
   return (

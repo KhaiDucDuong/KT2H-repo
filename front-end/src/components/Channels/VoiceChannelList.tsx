@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { channel } from "@/types/channel";
-import { CircleX, Pencil, Volume1Icon } from 'lucide-react';
+import { CircleX, EyeOff, Pencil, Volume1Icon } from 'lucide-react';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -105,6 +105,8 @@ const VoiceChannelList = (props: ChannelPanelProps) => {
         >
           <Volume1Icon className="mr-2"/>
           {channel.channel_name}
+          {channel.is_private === true && <EyeOff className="ml-2 mt-1 h-4 w-4" />}
+
         </div>
             </ContextMenuTrigger>
             <ContextMenuContent className="bg-dark-10 text-gray-4 shadow-2xl w-60 ring-0 border-0 focus-visible:ring-offset-0 focus-visible:ring-0">

@@ -54,11 +54,13 @@ const ContactComponent = (props: ContactProps) => {
       flex flex-col justify-between pb-[5px]"
       >
         <p className="text-gray-3 text-right text-[13px]">
-          {/* {displayLastSent} */}
+          {displayLastSent}
           11:00 AM
         </p>
-        <Badge className="flex justify-center w-fit
-        self-end bg-red-1 hover:bg-red-1 text-[12px]">{1}</Badge>
+        {/* <Badge className="flex justify-center w-fit
+        self-end bg-red-1 hover:bg-red-1 text-[12px]">{1}</Badge> */}
+
+        
         {/* {props.noMissedMessages > 0 && <Badge className="flex justify-center w-fit
         self-end bg-red-1 hover:bg-red-1 text-[12px]">{props.noMissedMessages}</Badge>} */}
       </div>

@@ -1,5 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { SignInMessages, signUp } from "@/services/AuthService";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
@@ -187,9 +188,23 @@ const SignUp = () => {
               />
             )}
           </div>
-          {state?.passwordErrors && (
-            <p className="text-red-1 my-[5px]">{state.passwordErrors}</p>
-          )}
+          {
+            state?.passwordErrors &&
+              state.passwordErrors.map((error, i, arr) => {
+                return (
+                  <p key={i}
+                    className={cn(
+                      "text-red-1 text-wrap max-w-[434px]",
+                      i === 0 && "mt-[5px] ",
+                      i + 1 === arr.length && "mb-[5px] "
+                    )}
+                  >
+                    {error}
+                  </p>
+                );
+              })
+            // <p className="text-red-1 my-[5px] text-wrap max-w-[434px]">{state.passwordErrors}</p>
+          }
         </div>
         <div className="flex flex-col flex-start mt-[20px]">
           <label
@@ -206,6 +221,9 @@ const SignUp = () => {
               type={isConfirmedPasswordVisible ? "text" : "password"}
               placeholder="Enter your password"
               className=" text-white bg-gray-8 border-gray-7 focus-visible:ring-0 placeholder:text-[#615E62]"
+              onPaste={(e) => {
+                e.preventDefault();
+              }}
             />
             {isConfirmedPasswordVisible ? (
               <EyeIcon
@@ -248,8 +266,9 @@ const SignUp = () => {
                 Your account has been created.
               </p>
               <p>
-                We sent an email to <span className="font-bold">{state.registeredEmail}</span>. Please check it to
-                activate your account and get started.
+                We sent an email to{" "}
+                <span className="font-bold">{state.registeredEmail}</span>.
+                Please check it to activate your account and get started.
               </p>
             </div>
           )}

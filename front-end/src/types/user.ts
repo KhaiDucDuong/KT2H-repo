@@ -54,6 +54,15 @@ export interface UserData {
   last_activity_at: number | null;
 }
 
+export interface UserFriendRequestSearch {
+  user_id: string;
+  user_name: string;
+  image: string | null;
+  first_name: string;
+  last_name: string;
+  is_Friend: string;
+}
+
 export const userDataSchema: z.ZodType<UserData> = z.object({
   user_id: z.string().uuid(),
   image: z.string().nullable(),

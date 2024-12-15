@@ -43,17 +43,26 @@ const ChannelPanel = (props:group) =>{
 <div className="text-white font-bold mb-4 bg-dark-9">
         {props.group_name}
         </div>
-  <div className="flex justify-between items-center text-gray-300 font-bold mb-1">
-    <div className="flex items-center">
-    <ChevronDown />
-    <p className="ml-2 select-none">Text Channel</p> 
-    </div>
-    <AddChannelForm onChannelAdded={fetchChannelList} groupId={props.group_id} channelType="TEXT_CHANNEL"/>
-    </div>
+        {props.group_id && (
+        <div className="flex justify-between items-center text-gray-300 font-bold mb-1">
+          <div className="flex items-center">
+            <ChevronDown />
+            <p className="ml-2 select-none">Text Channel</p>
+          </div>
+          <AddChannelForm
+            onChannelAdded={fetchChannelList}
+            groupId={props.group_id}
+            channelType="TEXT_CHANNEL"
+          />
+        </div>
+      )}
+      {props.group_id && (
       <TextChannelList channels={ChannelList.filter(channel => channel.channel_type === "TEXT_CHANNEL")}
       selectedChannel={selectedChannel}
       onSelectChannel={onSelectChannel}
-      onFetchChannels={fetchChannelList} />
+      onFetchChannels={fetchChannelList} /> 
+      )}
+    {props.group_id && (
   <div className="flex justify-between items-center text-gray-300 font-bold mb-1">
   <div className="flex items-center">
   <ChevronDown />
@@ -61,11 +70,12 @@ const ChannelPanel = (props:group) =>{
     </div>
       <AddChannelForm onChannelAdded={fetchChannelList} groupId={props.group_id} channelType="VOICE_CHANNEL"/>
   </div>
-  <VoiceChannelList channels={ChannelList.filter(channel => channel.channel_type === "VOICE_CHANNEL")}
+    )}
+  {props.group_id && ( <VoiceChannelList channels={ChannelList.filter(channel => channel.channel_type === "VOICE_CHANNEL")}
       selectedChannel={selectedChannel}
       onSelectChannel={onSelectChannel}
       onFetchChannels={fetchChannelList} />
-
+  )}
 </section>
 
     )

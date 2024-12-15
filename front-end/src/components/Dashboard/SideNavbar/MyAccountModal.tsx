@@ -21,26 +21,19 @@ import { Button } from "@/components/ui/button";
 import { UserIcon, Settings, LogOut, UserRoundPen } from "lucide-react";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { SocketContext, UserSessionContext } from "@/types/context";
+import { NavbarContext, SocketContext, UserSessionContext } from "@/types/context";
 import { logOut } from "@/services/AuthService";
 import MyProfileModal from "../MyProfile/MyProfileModal";
-
-export enum ShowMyAccountModalType {
-  NONE,
-  PROFILE,
-  SETTING,
-}
+import { ShowNavbarModalType } from "./SideNavbar";
 
 const MyAccountModal = () => {
   const socketContext = useContext(SocketContext);
   const userSessionContext = useContext(UserSessionContext);
-  const [showModalType, setShowModalType] = useState<ShowMyAccountModalType>(
-    ShowMyAccountModalType.NONE
-  );
+  const navbarContext = useContext(NavbarContext);
 
   useEffect(() => {
     return () => {
-      setShowModalType(ShowMyAccountModalType.NONE);
+      setShowNavbarModalType(ShowNavbarModalType.NONE);
     };
   }, []);
 
@@ -52,6 +45,9 @@ const MyAccountModal = () => {
       socketContext.stompClient.deactivate().then(() => logOut());
     }
   };
+
+  if(!navbarContext) return <div>Missing navbar context</div>
+  const {showNavbarModalType, setShowNavbarModalType} = navbarContext;
 
   if (!userSessionContext || !userSessionContext.currentUser)
     return <div>User context is null or current user is undefined</div>;
@@ -82,14 +78,14 @@ const MyAccountModal = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => setShowModalType(ShowMyAccountModalType.PROFILE)}
+            onClick={() => setShowNavbarModalType(ShowNavbarModalType.PROFILE)}
           >
             <UserIcon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => setShowModalType(ShowMyAccountModalType.SETTING)}
+            onClick={() => setShowNavbarModalType(ShowNavbarModalType.SETTING)}
           >
             <Settings className="mr-2 h-4 w-4" />
             <span>Setting</span>
@@ -101,8 +97,8 @@ const MyAccountModal = () => {
         </DropdownMenuContent>
       </DropdownMenu>
       <MyProfileModal
-        show={showModalType === ShowMyAccountModalType.PROFILE}
-        setShow={setShowModalType}
+        show={showNavbarModalType === ShowNavbarModalType.PROFILE}
+        setShow={setShowNavbarModalType}
       />
     </section>
   );

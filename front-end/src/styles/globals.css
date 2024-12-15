@@ -62,6 +62,101 @@
   animation: mltShdSpin 1.7s infinite ease, round 1.7s infinite ease;
 }
 
+.message-item {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin: 5px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message-content {
+  flex: 1;
+}
+
+.options {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: #f5f5f5;
+}
+
+.like-button {
+  position: absolute; /* Đặt vị trí của nút like trên tin nhắn */
+  bottom: 10px; /* Điều chỉnh khoảng cách từ dưới lên */
+  right: 10px; /* Điều chỉnh khoảng cách từ phải qua */
+  background: #f5f5f5;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+  width: 40px; /* Đặt chiều rộng cho button */
+  height: 40px; /* Đặt chiều cao cho button */
+  border-radius: 50%; /* Làm cho button có dạng tròn */
+  display: flex;
+  justify-content: center; /* Căn giữa nội dung trong button */
+  align-items: center; /* Căn giữa nội dung trong button */
+}
+
+
+.like-button:hover {
+  color: #007bff; /* Change color when hovering */
+}
+
+.emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.emoji-btn {
+  font-size: 24px;
+  padding: 8px;
+  margin: 5px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.emoji-btn:hover {
+  color: #007bff; /* Change color when hovering over emoji buttons */
+}
+
+@keyframes highlightAnimation {
+  0% {
+    background-color: #fffbcc;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
 @keyframes mltShdSpin {
   0% {
     box-shadow: 0 -0.83em 0 -0.4em,

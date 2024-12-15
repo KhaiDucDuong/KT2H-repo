@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import debounce from "lodash.debounce";
 import { getCurrentUser } from "@/services/UserService";
+import { UserFriendRequestSearch } from "@/types/user";
 export interface SendFriendRequestMessage {
   message?: string[];
   isSuccess?: boolean;
@@ -42,7 +43,7 @@ function SubmitButton(props: { isClickable: boolean, isRequestSent: boolean }) {
 const AddFriend = () => {
 
   const [state, formAction] = useFormState(sendFriendRequest, initialState);
-  const [searchUser, setsearchUser] = useState([]);
+  const [searchUser, setsearchUser] = useState<UserFriendRequestSearch[]>([]);
   const [isRequestSent, setIsRequestSent] = useState<boolean>(false);
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -62,7 +63,7 @@ const AddFriend = () => {
   
         const data = await res.json();
         if (data.response.statusCode === 200) {
-           setsearchUser(data.response.data);
+           setsearchUser(data.response.data as UserFriendRequestSearch[]);
            setIsRequestSent(false);
            console.log(searchUser)
         } 
@@ -77,11 +78,11 @@ const AddFriend = () => {
     return debounce(handleSearch, 500);
   }, [handleSearch]);
 
-  const handleChange = (e) => {
-    if (e.target.value.length > 0) {
-      debouncedSearch(e.target.value);
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    if (e.currentTarget.value.length > 0) {
+      debouncedSearch(e.currentTarget.value);
     }
-    else if (e.target.value.length === 0)
+    else if (e.currentTarget.value.length === 0)
     {
     debouncedSearch("");
     }
@@ -95,11 +96,13 @@ const AddFriend = () => {
     formRef.current?.reset();
     setIsRequestSent(true);
   };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault(); 
     }
   };
+
   useEffect(() => {
     if (state.isSuccess !== undefined) {
       setIsRequestSent(true); 
@@ -135,6 +138,7 @@ const AddFriend = () => {
             maxLength={255}
             onChange={handleChange}
             placeholder="You can add friends with their usernames or emails."
+            autoComplete="off"
           ></input>
         </div>
       </div>
@@ -168,7 +172,7 @@ const AddFriend = () => {
                            {user.is_Friend == '0' ? (
                   <SubmitButton
                     isClickable={!isRequestSent} 
-                    onClick={() => handleSendRequest(user.user_name)}
+                    // onClick={() => handleSendRequest(user.user_name)}
                     isRequestSent ={isRequestSent}
                   />
                 ) : (

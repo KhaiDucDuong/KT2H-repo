@@ -3,7 +3,7 @@
 import ContactListPanel from "@/components/Direct-message/ContactListPanel";
 import MessagePanel from "@/components/Direct-message/MessagePanel";
 import { Contact, getContactsFromResponse } from "@/types/contact";
-import { Message } from "@/types/message";
+import { Message, Reaction } from "@/types/message";
 import { ContactResponse } from "@/types/response";
 import { User } from "@/types/user";
 import { Client } from "@stomp/stompjs";
@@ -12,7 +12,9 @@ import NoContactMessagePanel from "./NoContactMessagePanel";
 
 interface DirectMessageProps {
   newConversationMessage: Message | null;
+  updateConversationMessage: Reaction | null;
   setNewConversationMessage: (message: Message | null) => void;
+  setUpdatedMessage: (message: Reaction | null) => void;
 }
 
 const DirectMessage = (props: DirectMessageProps) => {
@@ -67,7 +69,9 @@ const DirectMessage = (props: DirectMessageProps) => {
         <MessagePanel
           contact={selectedContact}
           newConversationMessage={props.newConversationMessage}
+          updateConversationMessage={props.updateConversationMessage}
           setNewConversationMessage={props.setNewConversationMessage}
+          setUpdatedMessage={props.setUpdatedMessage}
         />
       ) : (
         <NoContactMessagePanel />

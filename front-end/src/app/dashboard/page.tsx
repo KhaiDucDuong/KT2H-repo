@@ -12,7 +12,12 @@ import {
 import { getCurrentUser } from "@/services/UserService";
 import DirectMessage from "@/components/Direct-message/DirectMessage";
 import SideNavbar from "@/components/Dashboard/SideNavbar/SideNavbar";
-import { Message, messageSchema } from "@/types/message";
+import {
+  Message,
+  Reaction,
+  messageSchema,
+  reactionSchemas,
+} from "@/types/message";
 import Friends from "@/components/Friends/Friends";
 import Groups from "@/components/Groups/Groups";
 import {
@@ -32,6 +37,8 @@ import { DashboardTab } from "@/types/ui";
 import { SocketContext, UserSessionContext } from "@/types/context";
 import { getAccessToken, setUserSessionCookie } from "@/services/AuthService";
 import InitialLoading from "@/components/Dashboard/InitialLoading";
+import EmojiContainer from "@/components/Direct-message/EmojiContainer";
+import { Setting, settingSchema } from "@/types/setting";
 
 const IDLE_INTERVAL_TIME = 1000 * 60 * 5; // 1000 * 60 * 5 = 300,000 ms = 5 minutes
 const events = [
@@ -49,9 +56,12 @@ const DashboardPage = () => {
     DashboardTab.DIRECT_MESSAGE
   );
   const [currentUser, setCurrentUser] = useState<User>();
+  const [userSetting, setUserSetting] = useState<Setting>();
   const [stompClient, setStompClient] = useState<Client>();
   const [newConversationMessage, setNewConversationMessage] =
     useState<Message | null>(null);
+  const [updateConversationMessage, setUpdatedMessage] =
+    useState<Reaction | null>(null);
   const [
     newSocketInvitationNotifications,
     setSocketNewInvitationNotifications,
@@ -64,6 +74,21 @@ const DashboardPage = () => {
 
   useEffect(() => {
     let ignore = false;
+
+    async function fetchUserSetting() {
+      const res = await fetch(`/dashboard/api/setting`, {
+        method: "GET",
+      });
+      const data = (await res.json()) as { body?: Setting; message: string };
+      if (!res.ok) {
+        console.log("Failed to fetch user's settings");
+      } else {
+        console.log("Setting data: ", data.body);
+        const parseResult = settingSchema.safeParse(data.body);
+        if (!parseResult || ignore) return;
+        setUserSetting(data.body);
+      }
+    }
 
     async function fetchCurrentUser() {
       const data = await getCurrentUser();
@@ -102,6 +127,16 @@ const DashboardPage = () => {
             "/user/" +
             currentUser.user_id +
             "/private"
+        );
+        stompClient.subscribe(
+          "/user/" + currentUser.user_id + "/update-message",
+          onUpdatedMessage
+        );
+        console.log(
+          "Successfully subscribe to " +
+            "/user/" +
+            currentUser.user_id +
+            "/update-message"
         );
         stompClient.subscribe(
           "/user/" + currentUser.user_id + "/notification",
@@ -157,7 +192,7 @@ const DashboardPage = () => {
       // inactivityTimeoutRef: React.MutableRefObject<NodeJS.Timeout | null>
       if (inactivityTimeoutRef.current) {
         clearTimeout(inactivityTimeoutRef.current);
-        console.log("Clear Inactivity Timeout");
+        // console.log("Clear Inactivity Timeout");
       }
 
       // Set user to "away" after 5 minutes of inactivity
@@ -181,9 +216,9 @@ const DashboardPage = () => {
     }
 
     function handleUserActivity() {
-      console.log(
-        `Handle user activity; stomp ref: ${stompClientRef.current?.connected}, user ref: ${userRef.current?.status}, wasActive ref: ${wasActiveRef.current}`
-      );
+      // console.log(
+      //   `Handle user activity; stomp ref: ${stompClientRef.current?.connected}, user ref: ${userRef.current?.status}, wasActive ref: ${wasActiveRef.current}`
+      // );
       if (
         stompClientRef.current?.connected &&
         userRef.current?.status === UserStatus.IDLE &&
@@ -211,6 +246,8 @@ const DashboardPage = () => {
         setupInactivityTimeout();
       }
     });
+
+    fetchUserSetting()
 
     return () => {
       ignore = true;
@@ -245,6 +282,20 @@ const DashboardPage = () => {
       return;
     }
     setNewConversationMessage(message);
+  };
+
+  const onUpdatedMessage = (payload: any) => {
+    const reaction = JSON.parse(payload.body) as Reaction;
+    console.log("Receive a notification");
+    console.log(JSON.stringify(reaction));
+    try {
+      const validatedMessage = reactionSchemas.parse(reaction);
+    } catch (error) {
+      console.log("Invalid message payload");
+      return;
+    }
+    // Kiểm tra xem tin nhắn đã tồn tại hay chưa (cập nhật tin nhắn)
+    setUpdatedMessage(reaction);
   };
 
   const onNotification = (payload: any) => {
@@ -300,7 +351,9 @@ const DashboardPage = () => {
         value={{
           stompClient,
           newConversationMessage,
+          updateConversationMessage,
           setNewConversationMessage,
+          setUpdatedMessage,
           newSocketInvitationNotifications,
           setSocketNewInvitationNotifications,
         }}
@@ -309,6 +362,8 @@ const DashboardPage = () => {
           value={{
             currentUser,
             setCurrentUser,
+            userSetting,
+            setUserSetting
           }}
         >
           <SideNavbar currentTab={currentTab} setCurrentTab={setCurrentTab} />
@@ -317,6 +372,8 @@ const DashboardPage = () => {
               <DirectMessage
                 newConversationMessage={newConversationMessage}
                 setNewConversationMessage={setNewConversationMessage}
+                updateConversationMessage={updateConversationMessage}
+                setUpdatedMessage={setUpdatedMessage}
               />
             )}
             {currentTab === DashboardTab.GROUP_CHAT && (

@@ -43,10 +43,10 @@ export async function signUp(
   const schema = registerSchema;
 
   const data = {
-    email: formData.get("email"),
-    username: formData.get("username"),
-    first_name: formData.get("firstName"),
-    last_name: formData.get("lastName"),
+    email: formData.get("email")?.toString().trim(),
+    username: formData.get("username")?.toString().trim(),
+    first_name: formData.get("firstName")?.toString().trim(),
+    last_name: formData.get("lastName")?.toString().trim(),
     password: formData.get("password"),
     confirm_password: formData.get("confirmPassword"),
   };

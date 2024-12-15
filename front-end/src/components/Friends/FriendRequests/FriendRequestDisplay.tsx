@@ -59,16 +59,20 @@ const FriendRequestDisplay = (props: { selectedTab: FriendRequestTab }) => {
   }, [props.selectedTab]);
 
   if (isLoading) {
-    return <FriendRequestDisplayLoading />;
+    return  <section>       
+    <div className="mb-[10px] w-[96%] h-[40px] pl-[14px] text-gray-2 self-center flex flex-col justify-end">
+          Pending: 0  </div> 
+    <FriendRequestDisplayLoading />;
+    </section>
   }
 
   return (
     <ScrollArea>
       <section className="size-full flex flex-col">
         {props.selectedTab === FriendRequestTab.INCOMING && (
-          <div>
-            <div className="mb-[10px] w-[96%] h-[40px] pl-[14px] text-gray-2 self-center flex flex-col justify-end">
-              Pending: {incomingRequests.length}
+          <section>
+    <div className="mb-[10px] w-[96%] h-[40px] pl-[14px] text-gray-2 self-center flex flex-col justify-end">
+          Pending: {incomingRequests.length}
             </div>{" "}
             {incomingRequests.map((request) => {
               if (request.status === FriendRequestStatus.PENDING.toString())
@@ -79,11 +83,11 @@ const FriendRequestDisplay = (props: { selectedTab: FriendRequestTab }) => {
                   />
                 );
             })}
-          </div>
+          </section>
         )}
         {props.selectedTab === FriendRequestTab.OUTGOING && (
           <div>
-            <div className="mb-[10px] w-[96%] h-[40px] pl-[14px] text-gray-2 self-center flex flex-col justify-end">
+                <div className="mb-[10px] w-[96%] h-[40px] pl-[14px] text-gray-2 self-center flex flex-col justify-end">
               Pending: {outgoingRequests.length}
             </div>{" "}
             {outgoingRequests.map((request) => {

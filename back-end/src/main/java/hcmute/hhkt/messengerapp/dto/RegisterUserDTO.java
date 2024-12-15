@@ -6,6 +6,7 @@ import hcmute.hhkt.messengerapp.util.RegrexUtil;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -38,7 +39,8 @@ public class RegisterUserDTO {
     private String email;
 
     @NotBlank(message = "Password cannot be blank")
-    @Length(min = 8,message = "Password must be at least 8 characters")
+    @Pattern(regexp = RegrexUtil.passwordRegrex,message = "Password must contain at least 1 character, 1 number, 1 special character, and 1 capital character")
+    @Length(min = 8 ,message = "Password must be at least 8 characters")
     @JsonProperty("password")
     private String password;
 }

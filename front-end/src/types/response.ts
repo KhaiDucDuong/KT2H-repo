@@ -1,6 +1,7 @@
 import { Contact } from "./contact";
 import { MessageType } from "./message";
 import { InvitationNotification } from "./notification";
+import { PrivacySetting } from "./setting";
 import { StatusUpdate, User, UserData, UserStatus } from "./user";
 
 export interface GenericResponse {
@@ -16,6 +17,13 @@ export interface GenericMetaResponse {
     page_size: number;
     total: number;
   };
+}
+
+export interface Reaction {
+  id: string;
+  emoji: string;
+  user_id: string;
+  message_id: string;
 }
 
 export interface ContactResponse extends GenericResponse {
@@ -49,15 +57,31 @@ export interface ConversationMessageResponse extends GenericResponse {
       message_type: MessageType;
       is_reacted: boolean;
       sent_at: number;
-      image_urls: string[]; // Optional field for image URL
+      image_urls: string[];
+      react_emojis: Reaction[]; // Optional field for image URL
+      has_bad_words: boolean
     }[];
   };
 }
+
+export interface ReactionResponse extends GenericResponse {
+    result: {
+      id: string;
+      emoji: string;
+      user_id: string;
+      message_id: string; // Optional field for image URL
+    }[];
+}
+
 
 export interface InvitationNotificationResponse extends GenericResponse {
   data: GenericMetaResponse & {
     result: InvitationNotification[];
   };
+}
+
+export interface PrivacySettingResponse extends GenericResponse {
+  data: PrivacySetting
 }
 
 export interface UserResponse extends GenericResponse {

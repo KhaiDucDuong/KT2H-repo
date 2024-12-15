@@ -77,7 +77,8 @@ export function GroupAddForm({onGroupAdded}:GroupAddFormProps) {
             <input
               required id="Groupname"
               onChange={(e) => setgroupName(e.target.value)}
-              className="col-span-3 bg-dark-6 ring-0 border-0"
+              className="col-span-3 bg-dark-6 ring-0 border-0 pl-[6px]"
+              autoComplete="off"
             />
           </div>
         </div>

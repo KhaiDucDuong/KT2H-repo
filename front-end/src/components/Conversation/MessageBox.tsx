@@ -1,5 +1,12 @@
 import { ChangeEvent, useContext, useState, useEffect } from "react";
-import { ImageIcon, SendHorizontalIcon, StickerIcon, PaperclipIcon, EllipsisIcon } from "lucide-react";
+import {
+  ImageIcon,
+  SendHorizontalIcon,
+  StickerIcon,
+  PaperclipIcon,
+  EllipsisIcon,
+  LucideLoaderCircle,
+} from "lucide-react";
 import { User } from "@/types/user";
 import { SocketContext } from "@/types/context";
 import { uploadImage } from "@/services/MessageService";
@@ -14,11 +21,14 @@ const MessageBox = (props: MessageBoxProps) => {
   const [text, setText] = useState<string>("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [isSending, setIsSending] = useState(false);
   const context = useContext(SocketContext);
 
   const handleSendMessage = async () => {
     if (!context || !context?.stompClient) {
-      console.log("Missing socket context or stomp client. Cannot send message.");
+      console.log(
+        "Missing socket context or stomp client. Cannot send message."
+      );
       return;
     }
 
@@ -27,6 +37,7 @@ const MessageBox = (props: MessageBoxProps) => {
     // Kiểm tra nếu có ảnh và cả tin nhắn văn bản
     if (imageFiles.length > 0 && text.trim().length > 0) {
       try {
+        setIsSending(true);
         let uploadedImageUrls: string[] = [];
 
         // Upload từng ảnh
@@ -59,6 +70,7 @@ const MessageBox = (props: MessageBoxProps) => {
     } else if (imageFiles.length > 0) {
       // Gửi chỉ ảnh
       try {
+        setIsSending(true);
         let uploadedImageUrls: string[] = [];
 
         // Upload từng ảnh
@@ -89,6 +101,7 @@ const MessageBox = (props: MessageBoxProps) => {
         return;
       }
     } else {
+      setIsSending(true);
       // Gửi chỉ tin nhắn văn bản
       messageBody = {
         conversation_id: props.contactId,
@@ -107,10 +120,15 @@ const MessageBox = (props: MessageBoxProps) => {
     // Reset các trường sau khi gửi
     setText("");
     setImageUrls([]);
+    setIsSending(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && (text.trim().length > 0 || imageFiles.length > 0)) {
+    if (
+      e.key === "Enter" &&
+      (text.trim().length > 0 || imageFiles.length > 0) &&
+      !isSending
+    ) {
       handleSendMessage();
     }
   };
@@ -119,17 +137,17 @@ const MessageBox = (props: MessageBoxProps) => {
     const files = event.target.files;
     if (files) {
       const fileArray = Array.from(files);
-      setImageFiles(prev => [...prev, ...fileArray]);
+      setImageFiles((prev) => [...prev, ...fileArray]);
 
-      const previewUrls = fileArray.map(file => URL.createObjectURL(file));
-      setImageUrls(prev => [...prev, ...previewUrls]);
+      const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
+      setImageUrls((prev) => [...prev, ...previewUrls]);
     }
   };
 
   useEffect(() => {
     return () => {
       // Giải phóng URL blob khi component unmount
-      imageUrls.forEach(url => URL.revokeObjectURL(url));
+      imageUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [imageUrls]);
 
@@ -146,7 +164,10 @@ const MessageBox = (props: MessageBoxProps) => {
       {imageUrls.length > 0 && (
         <div className="mb-2 w-fit flex flex-wrap ml-2 mt-2">
           {imageUrls.map((url, index) => (
-            <div key={index} className="relative w-[100px] h-[100px] flex items-center justify-center mr-2 mb-2">
+            <div
+              key={index}
+              className="relative w-[100px] h-[100px] flex items-center justify-center mr-2 mb-2"
+            >
               <Image
                 src={url} // URL.createObjectURL trả về một URL hợp lệ
                 alt={`Image preview ${index}`}
@@ -171,13 +192,23 @@ const MessageBox = (props: MessageBoxProps) => {
             className="w-[30px] h-[30px] cursor-pointer rounded-[5px] mr-[8px] hover:bg-gray-1 flex justify-center"
             onClick={() => {}}
           >
-            <StickerIcon className="text-gray-4 m-auto" strokeWidth={1.7} width={24} height={24} />
+            <StickerIcon
+              className="text-gray-4 m-auto"
+              strokeWidth={1.7}
+              width={24}
+              height={24}
+            />
           </div>
           <div
             className="w-[30px] h-[30px] cursor-pointer rounded-[5px] mr-[8px] hover:bg-gray-1 flex justify-center"
             onClick={() => document.getElementById("file-upload")?.click()}
           >
-            <ImageIcon className="text-gray-4 m-auto" strokeWidth={1.7} width={24} height={24} />
+            <ImageIcon
+              className="text-gray-4 m-auto"
+              strokeWidth={1.7}
+              width={24}
+              height={24}
+            />
             <input
               type="file"
               accept="image/*"
@@ -191,13 +222,23 @@ const MessageBox = (props: MessageBoxProps) => {
             className="w-[30px] h-[30px] cursor-pointer rounded-[5px] mr-[8px] hover:bg-gray-1 flex justify-center"
             onClick={() => {}}
           >
-            <PaperclipIcon className="text-gray-4 m-auto" strokeWidth={1.7} width={22} height={22} />
+            <PaperclipIcon
+              className="text-gray-4 m-auto"
+              strokeWidth={1.7}
+              width={22}
+              height={22}
+            />
           </div>
           <div
             className="w-[30px] h-[30px] cursor-pointer rounded-[5px] mr-[8px] hover:bg-gray-1 flex justify-center"
             onClick={() => {}}
           >
-            <EllipsisIcon className="text-gray-4 m-auto" strokeWidth={1.7} width={24} height={24} />
+            <EllipsisIcon
+              className="text-gray-4 m-auto"
+              strokeWidth={1.7}
+              width={24}
+              height={24}
+            />
           </div>
         </div>
       </div>
@@ -211,12 +252,19 @@ const MessageBox = (props: MessageBoxProps) => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyPress}
+          autoComplete="off"
         />
         <div
           className="w-[50px] h-[50px] cursor-pointer flex items-center justify-center ml-2 bg-primary-1 text-white rounded-[5px] hover:bg-primary-2"
-          onClick={handleSendMessage}
+          onClick={() => {
+            if (!isSending) handleSendMessage();
+          }}
         >
-          <SendHorizontalIcon className="w-[25px] h-[25px]" />
+          {isSending ? (
+            <LucideLoaderCircle className="w-[25px] h-[25px] animate-spin" />
+          ) : (
+            <SendHorizontalIcon className="w-[25px] h-[25px]" />
+          )}
         </div>
       </div>
     </section>

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { channel } from "@/types/channel";
-import { CircleX, MessageSquareText, Pencil } from 'lucide-react';
+import { CircleX, MessageSquareText, Pencil, EyeOff  } from 'lucide-react';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -103,6 +103,7 @@ const TextChannelList = (props: ChannelPanelProps) => {
               >
                 <MessageSquareText className="mr-2" />
                 {channel.channel_name}
+                {channel.is_private === true && <EyeOff className="ml-2 mt-1 h-4 w-4" />}
               </div>
             </ContextMenuTrigger>
             <ContextMenuContent className="bg-dark-10 text-gray-4 shadow-2xl w-60 ring-0 border-0 focus-visible:ring-offset-0 focus-visible:ring-0">

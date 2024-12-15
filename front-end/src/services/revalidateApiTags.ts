@@ -22,3 +22,8 @@ export async function revalidateOutgoingFriendRequestTag() {
   revalidateTag("outgoingFriendRequests");
   console.log("Revalidate outgoingFriendRequests tag");
 }
+
+export async function revalidateConversationStatus(userId: string) {
+  revalidateTag(`conversationStatus${userId}`);
+  console.log("Revalidate conversation status tag");
+}

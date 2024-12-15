@@ -1,22 +1,17 @@
 import { getAccessToken } from "@/services/AuthService";
-import { ContactResponse, UserStatusReponse } from "@/types/response";
+import { ContactResponse, ReactionResponse } from "@/types/response";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest
-): Promise<NextResponse<{ body?: ContactResponse; message: string }>> {
+): Promise<NextResponse<{ body?: ReactionResponse; message: string }>> {
   const searchParams = request.nextUrl.searchParams;
-  const userId = searchParams.get("id");
+  const messageId = searchParams.get("messageId");
   const accessToken = await getAccessToken(true);
-  // const sortBy = "last_message_date";
-
-  if (!userId) {
-    return NextResponse.json({ message: "Invalid user id" }, { status: 400 });
-  }
 
   try {
     const result = await fetch(
-      `${process.env.FETCH_USER_STATUS}${userId}`,
+      `${process.env.FETCH_REACTION_MESSAGES}/${messageId}`,
       {
         method: "GET",
         headers: {
@@ -24,28 +19,26 @@ export async function GET(
           Authorization: `Bearer ${accessToken}`,
         },
         next: {
-          revalidate: 300,
-          tags: [`conversationStatus${userId}`]
+            revalidate: 0
+        //   revalidate: 300,
+        //   tags: [`conversation-${conversationId}`],
         },
       }
     );
 
     if (!result.ok) {
       return NextResponse.json(
-        { message: "Failed to fetch user's status" },
+        { message: "Failed to fetch messages in conversation" },
         { status: 400 }
       );
     }
-
     const data = await result.json();
-    console.log("User's status data: ", JSON.stringify(data));
-    return NextResponse.json(data as UserStatusReponse, { status: 200 });
+    console.log("Conversation messages data: ", data);
+    return NextResponse.json(data as ReactionResponse, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
     );
   }
-
-  // res.end(`Post: ${pid}`)
 }

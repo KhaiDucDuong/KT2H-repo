@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { Contact } from "@/types/contact";
 import { getStatusUpdateFromResponse, UserStatus } from "@/types/user";
 import { UserStatusReponse } from "@/types/response";
+import { revalidateConversationStatus } from "@/services/revalidateApiTags";
 
 interface ContactMessageHeaderProps {
   profileHandleClick: () => void;
@@ -23,44 +24,55 @@ interface ContactMessageHeaderProps {
 }
 
 const ContactMessageHeader = (props: ContactMessageHeaderProps) => {
-  const { contact } = props;
-  const [contactStatus, setContactStatus] = useState<UserStatus | null>(
-    contact.to_user_status
-  );
+  const { contact, contactStatus } = props;
+  // const [contactStatus, setContactStatus] = useState<UserStatus | null>(
+  //   // contact.to_user_status
+  //   props.contactStatus
+  // );
 
-  useEffect(() => {
-    let ignore = false;
+  // useEffect(() => {
+  //   let ignore = false;
 
-    async function fetchContactStatus() {
-      const res = await fetch(
-        `/dashboard/api/contact/status?id=${contact.to_user_id}`,
-        {
-          method: "GET",
-        }
-      );
-      const body = (await res.json()) as UserStatusReponse;
-      if (!res.ok) {
-        console.log("Failed to fetch contact's status");
-      } else {
-        if (ignore) return;
-        const statusUpdate = getStatusUpdateFromResponse(body);
-        if (statusUpdate === null) return;
-        console.log(statusUpdate.user_id === contact.to_user_id)
-        if (statusUpdate.user_id === contact.to_user_id)
-          setContactStatus(statusUpdate.status);
-      }
-    }
+  //   async function fetchContactStatus() {
+  //     const res = await fetch(
+  //       `/dashboard/api/contact/status?id=${contact.to_user_id}`,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const body = (await res.json()) as UserStatusReponse;
+  //     if (!res.ok) {
+  //       console.log("Failed to fetch contact's status");
+  //     } else {
+  //       if (ignore) return;
+  //       const statusUpdate = getStatusUpdateFromResponse(body);
+  //       if (statusUpdate === null) return;
+  //       console.log(statusUpdate.user_id === contact.to_user_id)
+  //       if (statusUpdate.user_id === contact.to_user_id)
+  //         setContactStatus(statusUpdate.status);
+  //     }
+  //   }
 
-    fetchContactStatus()
+  //   fetchContactStatus()
 
-    return () => {
-      ignore = true;
-      setContactStatus(null);
-    };
-  }, [contact.id]);
+  //   return () => {
+  //     ignore = true;
+  //     setContactStatus(null);
+  //   };
+  // }, [contact.id]);
+
+  // useEffect(() => {
+  //   setContactStatus(props.contactStatus)
+
+  //   return () => {
+  //     setContactStatus(null)
+  //   }
+  // }, [props.contactStatus])
+  
 
   return (
     <section className="flex flex-row justify-between m-auto size-full ">
+      {/* {JSON.stringify(props.contactStatus)} */}
       <div className="w-[33%] py-[20px] flex flex-row pl-[10px] max-xl:w-[50%]">
         <div
           className="min-w-fit flex flex-col justify-center mr-[8px]
@@ -72,7 +84,7 @@ const ContactMessageHeader = (props: ContactMessageHeaderProps) => {
                 ? "/assets/images/profile-pic.jpg"
                 : contact.to_user_image
             }
-            alt={contact.to_user_nickname + "'s profile picture"}
+            alt={contact.to_user_nickname ? contact.to_user_nickname : `${contact.to_user_last_name} ${contact.to_user_first_name}` + " 's profile picture"}
             width={60}
             height={60}
             className="w-[50px] h-[50px] rounded-full max-sm:w-[40px] max-sm:h-[40px]"
@@ -80,7 +92,7 @@ const ContactMessageHeader = (props: ContactMessageHeaderProps) => {
         </div>
         <div className="h-full flex flex-col justify-between max-w-[calc(100%-82px)]">
           <p className="mt-[4px] font-bold text-gray-4 truncate">
-            {contact.to_user_nickname}
+            {contact.to_user_nickname ? contact.to_user_nickname : `${contact.to_user_last_name} ${contact.to_user_first_name}`}
           </p>
           {contactStatus === UserStatus.OFFLINE && (
             <p className="text-gray-10">Offline</p>
